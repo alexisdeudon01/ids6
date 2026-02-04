@@ -10,14 +10,13 @@ from __future__ import annotations
 from .interfaces import BaseAPIClient
 from .models import DeviceState
 
-# Use the Python tailscale library
 try:
-    from tailscale import Tailscale
-
-    TAILSCALE_LIB_AVAILABLE = True
+    from tailscale import Tailscale  # type: ignore
 except ImportError:
+    Tailscale = None  # type: ignore[assignment]
     TAILSCALE_LIB_AVAILABLE = False
-
+else:
+    TAILSCALE_LIB_AVAILABLE = True
 
 class TailscaleLibraryClient(BaseAPIClient):
     """
@@ -32,12 +31,12 @@ class TailscaleLibraryClient(BaseAPIClient):
         Initialize the client.
 
         Args:
-            tailnet: Tailnet name (e.g., "example.com" or "user@github")
+            tailnet: Tailnet name (e.g., "example.com" or "user@example.com")
             api_key: Tailscale API key (tskey-api-...)
         """
         if not TAILSCALE_LIB_AVAILABLE:
             raise ImportError(
-                "The 'tailscale' library is required. " "Install with: pip install tailscale"
+                "The 'tailscale' library is required. Install with: pip install tailscale"
             )
         super().__init__(tailnet, api_key)
 
